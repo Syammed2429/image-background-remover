@@ -1,3 +1,8 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "no-empty-pattern": "off",
+    "@typescript-eslint/no-empty-interface": "off"
+  }
 }
