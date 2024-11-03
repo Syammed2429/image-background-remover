@@ -103,22 +103,22 @@ const BackgroundRemoval: React.FC = () => {
                 className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2"
               >
                 {originalImage && (
+                  <ImageDisplayComponent
+                    imageSrc={originalImage}
+                    label="Original Image"
+                  />
+                )}
+                {processedImage && (
                   <div className="relative group">
                     <ImageDisplayComponent
-                      imageSrc={originalImage}
-                      label="Original Image"
+                      imageSrc={processedImage}
+                      label="Processed Image"
                     />
                     <DownloadButton
                       className="absolute hidden group-hover:flex inset-0  items-center justify-center bg-black/50 rounded-lg transition-colors duration-300 ease-in-out"
-                      imageSrc={originalImage}
+                      imageSrc={processedImage}
                     />
                   </div>
-                )}
-                {processedImage && (
-                  <ImageDisplayComponent
-                    imageSrc={processedImage}
-                    label="Processed Image"
-                  />
                 )}
               </motion.div>
             )}
