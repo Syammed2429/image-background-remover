@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function EnhancedBackgroundRemoval() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -35,19 +37,27 @@ export default function EnhancedBackgroundRemoval() {
 
     setIsProcessing(true);
     try {
-      console.log("originalImage:", originalImage);
       const blob = await removeBackground(originalImage);
-      console.log("blob:", blob);
       const url = URL.createObjectURL(blob);
       setProcessedImage(url);
-      console.log("Processed Image URL:", url);
     } catch (error) {
-      console.error("Error in background removal:", error);
+      if (error) toast.error("Failed to remove background");
     } finally {
+      toast.success("Background removed successfully");
       setIsProcessing(false);
     }
   };
 
+  const imageDownload = () => {
+    const link = document.createElement("a");
+    if (processedImage) {
+      link.href = processedImage;
+    }
+    link.download = "processedImage.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#789DBC] to-[#789DBC] p-8">
       <Card className="w-full max-w-4xl border-none bg-white/10 shadow-2xl backdrop-blur-lg">
@@ -62,13 +72,15 @@ export default function EnhancedBackgroundRemoval() {
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
-                // className="hidden"
+                className="hidden"
                 disabled={isProcessing}
-                className={`hidden ${isProcessing} && 'cursor-not-allowed'`}
               />
               <Label
                 htmlFor="image-upload"
-                className="flex w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-white/50 p-4 transition-colors hover:bg-white/5"
+                className={cn(
+                  "flex w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-white/50 p-4 transition-colors hover:bg-white/5",
+                  { "cursor-not-allowed": isProcessing }
+                )}
               >
                 <Upload className="mr-2 h-6 w-6 text-white" />
                 <span className="text-white">Upload an image</span>
@@ -104,7 +116,7 @@ export default function EnhancedBackgroundRemoval() {
                 className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2"
               >
                 {originalImage && (
-                  <div className="relative overflow-hidden rounded-lg shadow-xl group">
+                  <div className="relative overflow-hidden rounded-lg shadow-xl">
                     <h2 className="absolute left-0 right-0 top-0 bg-black/50 p-2 text-lg font-semibold text-white">
                       Original Image
                     </h2>
@@ -116,13 +128,10 @@ export default function EnhancedBackgroundRemoval() {
                       animate={{ scale: 1 }}
                       transition={{ duration: 0.3 }}
                     />
-                    <div className="">
-                      <DownloadIcon className="mr-2 h-5 w-5" />
-                    </div>
                   </div>
                 )}
                 {processedImage && (
-                  <div className="relative overflow-hidden rounded-lg shadow-xl">
+                  <div className="group relative overflow-hidden rounded-lg shadow-xl">
                     <h2 className="absolute left-0 right-0 top-0 bg-black/50 p-2 text-lg font-semibold text-white">
                       Processed Image
                     </h2>
@@ -134,6 +143,12 @@ export default function EnhancedBackgroundRemoval() {
                       animate={{ scale: 1 }}
                       transition={{ duration: 0.3 }}
                     />
+                    <div className="absolute inset-0 hidden group-hover:flex items-center justify-center bg transition-colors hover:bg-black/50  duration-100 ease-in-out">
+                      <DownloadIcon
+                        className="h-16 w-16 text-white cursor-pointer"
+                        onClick={imageDownload}
+                      />
+                    </div>
                   </div>
                 )}
               </motion.div>
