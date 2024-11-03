@@ -41,9 +41,14 @@ export default function EnhancedBackgroundRemoval() {
       const url = URL.createObjectURL(blob);
       setProcessedImage(url);
     } catch (error) {
-      if (error) toast.error("Failed to remove background");
+      if (error)
+        toast.error("Failed to remove background", {
+          closeButton: true,
+        });
     } finally {
-      toast.success("Background removed successfully");
+      toast.success("Background removed successfully", {
+        closeButton: true,
+      });
       setIsProcessing(false);
     }
   };
