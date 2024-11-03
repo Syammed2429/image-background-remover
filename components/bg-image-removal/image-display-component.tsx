@@ -8,7 +8,7 @@ interface ImageDisplayProps {
 
 const ImageDisplay: React.FC<ImageDisplayProps> = ({ imageSrc, label }) => (
   <div className="relative overflow-hidden rounded-lg shadow-xl">
-    <h2 className="absolute left-0 right-0 top-0 bg-black/50 p-2 text-lg font-semibold text-white">
+    <h2 className="absolute left-0 right-0 top-0 bg-black/50 p-2 text-lg font-semibold text-white z-20">
       {label}
     </h2>
     <motion.img

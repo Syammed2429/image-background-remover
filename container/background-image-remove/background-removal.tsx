@@ -58,7 +58,7 @@ const BackgroundRemoval: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#789DBC] to-[#789DBC] p-8">
+    <div className="flex min-h-screen items-center justify-center p-8 bg-gradient-to-br from-gray-900 to-slate-500">
       <Card className="w-full max-w-4xl border-none bg-white/10 shadow-2xl backdrop-blur-lg">
         <CardContent className="p-8">
           <h1 className="mb-8 text-center text-4xl font-bold text-white">
