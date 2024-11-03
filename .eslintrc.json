@@ -3,6 +3,7 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "no-empty-pattern": "off",
-    "@typescript-eslint/no-empty-interface": "off"
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/no-empty-object-type": "off" // Disable no-empty-object-type rule here
   }
 }
