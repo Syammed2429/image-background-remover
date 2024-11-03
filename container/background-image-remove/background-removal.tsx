@@ -1,21 +1,25 @@
 "use client";
 
-import { useCallback, useState } from "react";
 import { removeBackground } from "@imgly/background-removal";
 import { AnimatePresence, motion } from "framer-motion";
-import { DownloadIcon, Loader2, Upload, Wand2 } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import React, { useCallback } from "react";
+import { Upload } from "lucide-react";
+import ButtonWithLoaderComponent from "@/components/bg-image-removal/button-with-loader-component";
+import ImageDisplayComponent from "@/components/bg-image-removal/image-display-component";
 
-export default function EnhancedBackgroundRemoval() {
-  const [originalImage, setOriginalImage] = useState<string | null>(null);
-  const [processedImage, setProcessedImage] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+import DownloadButton from "@/components/bg-image-removal/download-image";
+
+const BackgroundRemoval: React.FC = () => {
+  const [originalImage, setOriginalImage] = React.useState<string | null>(null);
+  const [processedImage, setProcessedImage] = React.useState<string | null>(
+    null
+  );
+  const [isProcessing, setIsProcessing] = React.useState(false);
 
   const handleFileChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,16 +57,6 @@ export default function EnhancedBackgroundRemoval() {
     }
   };
 
-  const imageDownload = () => {
-    const link = document.createElement("a");
-    if (processedImage) {
-      link.href = processedImage;
-    }
-    link.download = "processedImage.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#789DBC] to-[#789DBC] p-8">
       <Card className="w-full max-w-4xl border-none bg-white/10 shadow-2xl backdrop-blur-lg">
@@ -92,23 +86,11 @@ export default function EnhancedBackgroundRemoval() {
               </Label>
             </div>
             <div className="flex justify-center">
-              <Button
+              <ButtonWithLoaderComponent
                 onClick={removeBg}
                 disabled={!originalImage || isProcessing}
-                className="w-full transform rounded-full bg-gradient-to-r from-[#789DBC] to-purple-500 px-6 py-2 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-pink-600 hover:to-purple-600 sm:w-auto"
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Removing Background...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-2 h-5 w-5" />
-                    Remove Background
-                  </>
-                )}
-              </Button>
+                isProcessing={isProcessing}
+              />
             </div>
           </div>
           <AnimatePresence>
@@ -121,40 +103,22 @@ export default function EnhancedBackgroundRemoval() {
                 className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2"
               >
                 {originalImage && (
-                  <div className="relative overflow-hidden rounded-lg shadow-xl">
-                    <h2 className="absolute left-0 right-0 top-0 bg-black/50 p-2 text-lg font-semibold text-white">
-                      Original Image
-                    </h2>
-                    <motion.img
-                      src={originalImage}
-                      alt="Original"
-                      className="h-auto w-full"
-                      initial={{ scale: 0.8 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.3 }}
+                  <div className="relative group">
+                    <ImageDisplayComponent
+                      imageSrc={originalImage}
+                      label="Original Image"
+                    />
+                    <DownloadButton
+                      className="absolute hidden group-hover:flex inset-0  items-center justify-center bg-black/50 rounded-lg transition-colors duration-300 ease-in-out"
+                      imageSrc={originalImage}
                     />
                   </div>
                 )}
                 {processedImage && (
-                  <div className="group relative overflow-hidden rounded-lg shadow-xl">
-                    <h2 className="absolute left-0 right-0 top-0 bg-black/50 p-2 text-lg font-semibold text-white">
-                      Processed Image
-                    </h2>
-                    <motion.img
-                      src={processedImage}
-                      alt="Processed"
-                      className="h-auto w-full"
-                      initial={{ scale: 0.8 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                    <div className="absolute inset-0 hidden group-hover:flex items-center justify-center bg transition-colors hover:bg-black/50  duration-100 ease-in-out">
-                      <DownloadIcon
-                        className="h-16 w-16 text-white cursor-pointer"
-                        onClick={imageDownload}
-                      />
-                    </div>
-                  </div>
+                  <ImageDisplayComponent
+                    imageSrc={processedImage}
+                    label="Processed Image"
+                  />
                 )}
               </motion.div>
             )}
@@ -163,4 +127,6 @@ export default function EnhancedBackgroundRemoval() {
       </Card>
     </div>
   );
-}
+};
+
+export default BackgroundRemoval;
